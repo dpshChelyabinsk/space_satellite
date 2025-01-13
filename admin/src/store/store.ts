@@ -8,7 +8,7 @@ import {API_URL} from "../http";
 export default class Store {
 	user = {} as IUser;
 	isAuth = false;
-	isLoadind = false;
+	isLoading = false;
 
 	constructor() {
 		makeAutoObservable(this);
@@ -23,18 +23,18 @@ export default class Store {
 	}
 
 	setLoading(bool: boolean) {
-		this.isLoadind = bool;
+		this.isLoading = bool;
 	}
 
 	async login(login: string, password: string) {
 		try {
 			const response = await AuthService.login(login, password);
-			console.log(response);
 			localStorage.setItem('token', response.data.accessToken);
 			this.setAuth(true);
 			this.setUser(response.data.user)
 		} catch (e: any) {
-			console.log(e.response?.data?.message);
+			//console.log(e.response?.data?.message);
+			return e.response?.data?.message || 'Ошибка авторизации';
 		}
 	}
 

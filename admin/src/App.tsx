@@ -1,9 +1,9 @@
 import React, { createContext } from 'react';
 import {observer} from "mobx-react-lite";
-import AppRouter from "./components/AppRouter";
+import AppRouter from "./components/routers/AppRouter";
 import {BrowserRouter} from "react-router-dom";
 import Store from "./store/store";
-import Header from "./components/Header";
+import Header from "./components/UI/header/Header";
 
 interface StoreState {
     store: Store,

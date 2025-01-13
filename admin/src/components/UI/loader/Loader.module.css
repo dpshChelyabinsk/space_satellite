@@ -2,7 +2,7 @@
   width: 100px;
   height: 100px;
   animation: rotate 1s infinite linear;
-  border: 5px dashed teal;
+  border: 5px dashed var(--royal-lilac);
   border-radius: 50%;
 }
 

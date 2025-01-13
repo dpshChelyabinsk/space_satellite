@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 20% auto;
+  padding: 20px 300px;
+  width: 80%;
+  height: 335px;
+}
+
+.header {
+  font-family: var(--font-family);
+  font-size: 28px;
+  text-align: center;
+  color: var(--dark-night);
+}
+
+.inputsBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px;
+}

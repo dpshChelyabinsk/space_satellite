@@ -10,10 +10,10 @@ const ApiError = require('../exceptions/api-error');
 class UserService {
     async registration(login, fullName, password, email, role) {
         const candidate = await db.Users.findOne({
-            where: { user_login: login }
+            where: {user_login: login}
         });
-        if(candidate) {
-            throw ApiError.BadRequest(`A user with the same name '${login}' already exists`);
+        if (candidate) {
+            throw ApiError.BadRequest(`Пользователь с таким логином '${login}' уже существует`);
         }
         const hashPassword = await bcrypt.hash(password, 3);
         const activationLink = uuid.v4(); // v34fa-asfasf-142saf-sa-asf
@@ -35,12 +35,13 @@ class UserService {
         return {...tokens, user: userDto}
     }
 
-    async activate(activationLink){
+    async activate(activationLink) {
         const user = await db.Users.findOne({
-            where: { user_activation_link: activationLink }
+            where: {user_activation_link: activationLink}
         });
         if (!user) {
-            throw ApiError.BadRequest('It seems there is an issue with the provided link. Please verify it or contact support if the problem persists.')
+            throw ApiError.BadRequest('Кажется возникла проблема с предоставленной ссылкой. ' +
+                'Пожалуйста, свяжитесь со службой поддержки.')
         }
         user.user_activated = true;
         await user.save();
@@ -48,14 +49,14 @@ class UserService {
 
     async login(login, password) {
         const user = await db.Users.findOne({
-           where: { user_login: login }
+            where: {user_login: login}
         });
         if (!user) {
-            throw ApiError.BadRequest(`A user with the same name '${login}' is not exists`)
+            throw ApiError.BadRequest(`Пользователь с таким логином '${login}' не существует`)
         }
         const isPassEquals = await bcrypt.compare(password, user.user_pass);
         if (!isPassEquals) {
-            throw ApiError.BadRequest(`Incorrect password`)
+            throw ApiError.BadRequest(`Неправильный пароль`)
         }
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({...userDto});
@@ -76,7 +77,7 @@ class UserService {
         const userData = tokenService.validateRefreshToken(refreshToken);
         const tokenFromDb = await tokenService.findToken(refreshToken);
 
-        if(!userData || !tokenFromDb) {
+        if (!userData || !tokenFromDb) {
             throw ApiError.UnauthorizedError();
         }
         const user = await db.Users.findByPk(userData.id); // maybe error by findByPk
@@ -87,7 +88,7 @@ class UserService {
         return {...tokens, user: userDto};
     }
 
-    async getAllUsers(){
+    async getAllUsers() {
         const users = await db.Users.findAll();
         const getUserDto = users.map(user => new GetUserDto(user));
         return getUserDto;

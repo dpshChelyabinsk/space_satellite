@@ -1,6 +1,7 @@
 import React, {FC, useContext, useState} from 'react';
-import {Context} from "../App";
+import {Context} from "../../../App";
 import {observer} from "mobx-react-lite";
+import {RegistrationFormClasses} from "./styles"
 
 const RegistrationForm = () => {
 	const [login, setLogin] = useState<string>('');
@@ -11,7 +12,7 @@ const RegistrationForm = () => {
 	const {store} = useContext(Context);
 
 	return (
-		<div>
+		<div className={RegistrationFormClasses.container}>
 			<input
 				onChange={e => setLogin(e.target.value)}
 				value={login}

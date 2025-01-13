@@ -6,10 +6,9 @@ const AppLoader = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Здесь вы можете имитировать задержку или дождаться загрузки ресурсов приложения
         const timer = setTimeout(() => {
             setLoading(false);
-        }, 0); // Установите необходимое время задержки
+        }, 0);
 
         return () => clearTimeout(timer);
     }, []);

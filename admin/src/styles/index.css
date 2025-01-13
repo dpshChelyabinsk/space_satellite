@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+:root {
+  --pure-white: #ffffff;
+  --dark-night: #221737;
+  --midnight-indigo: #2C1973;
+  --royal-lilac: #4B3EAA;
+  --sunset-orange: #FF8244;
+
+  --lavender-sky: #8680E5;
+  --misty-morning: #9F99A4;
+  --flaming-coral: #FF4242;
+  --emerald-meadow: #0C9000;
+  --honey-glow: #FFC600;
+
+  --font-family: "Jura", sans-serif;
+  --heading-font-family: "Kadwa", serif;
+}

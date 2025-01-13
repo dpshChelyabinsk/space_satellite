@@ -1,13 +1,18 @@
 import React from 'react';
-import LoginForm from "../components/LoginForm";
-import RegistrationForm from "../components/RegistrationForm";
+import LoginForm from "../components/UI/forms/LoginForm";
+import BodyBox from "../components/UI/views/BodyBox";
+import SectionBlock from "../components/UI/views/SectionBlock";
+import {AuthClasses} from "./Styles";
 
 const Auth: React.FC = () => {
 	return (
-		<div>
-			<LoginForm />
-			<RegistrationForm />
-		</div>
+		<>
+			<BodyBox>
+				<SectionBlock additionalClass={AuthClasses.container}>
+					<LoginForm />
+				</SectionBlock>
+			</BodyBox>
+		</>
 	);
 };
 

@@ -1,9 +1,9 @@
 import React, {useContext, useEffect} from "react";
 import { observer } from "mobx-react-lite";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { privateRoutes, publicRoutes } from "../router";
-import Loader from "./UI/loader/Loader";
-import { Context } from "../App"; // Импортируем контекст
+import { privateRoutes, publicRoutes } from "../../router";
+import Loader from "../UI/loader/Loader";
+import { Context } from "../../App";
 
 const AppRouter: React.FC = observer(() => {
 	const { store } = useContext(Context);
@@ -15,7 +15,7 @@ const AppRouter: React.FC = observer(() => {
 		store.setLoading(false);
 	}, [store]);
 
-	if(store.isLoadind) {
+	if(store.isLoading) {
 		return <div><Loader/></div>
 	}
 
