@@ -3,6 +3,7 @@ const router = new Router();
 const userController = require('../controllers/user-controller');
 const fileController = require('../controllers/file-controller');
 const eventController = require('../controllers/event-controller');
+const clientController = require('../controllers/client-controller');
 const {body} = require('express-validator');
 const authMiddleware = require('../middlewares/auth-middleware');
 const upload = require('../utils/multer');
@@ -27,5 +28,9 @@ router.put('/updateEvent/:eventId', authMiddleware, upload.array('files', 10), e
 router.get('/getEvent/:eventId', eventController.getEventById);
 router.get('/getEvents', eventController.getAllEvents);
 router.delete('/deleteEvent/:eventId', authMiddleware, eventController.deleteEvent);
+
+router.post('/register-client', clientController.registerClient);
+router.get('/event/:event_id/clients', clientController.getClientsByEvent);
+
 
 module.exports = router;

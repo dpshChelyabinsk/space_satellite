@@ -141,9 +141,13 @@ class EventService {
                 }
             }
 
+            await db.Clients.destroy({
+                where: { client_event_id: eventId }
+            });
+
             await event.destroy();
 
-            return { message: `Событие с ID ${eventId} успешно удалено` };
+            return { message: `Событие с ID ${eventId} и все связанные клиенты успешно удалены` };
         } catch (error) {
             throw ApiError.BadResponse(`Ошибка при удалении события: ${error.message}`);
         }

@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const Events = require("./Events");
 
 module.exports = function (sequelize) {
     return sequelize.define('Clients', {
@@ -23,6 +24,14 @@ module.exports = function (sequelize) {
         client_date_registry: {
             type: Sequelize.DATE,
             allowNull: false
+        },
+        client_event_id: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+                model: Events(sequelize),
+                key: 'event_id'
+            }
         }
     }, {
         timestamps: false,
