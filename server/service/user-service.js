@@ -51,12 +51,13 @@ class UserService {
         const user = await db.Users.findOne({
             where: {user_login: login}
         });
-        if (!user) {
-            throw ApiError.BadRequest(`Пользователь с таким логином '${login}' не существует`)
+        let isPassEquals = false;
+        if (user) {
+            isPassEquals = await bcrypt.compare(password, user.user_pass);
         }
-        const isPassEquals = await bcrypt.compare(password, user.user_pass);
-        if (!isPassEquals) {
-            throw ApiError.BadRequest(`Неправильный пароль`)
+
+        if (!user || !isPassEquals) {
+            throw ApiError.BadRequest(`Имя пользователя или пароль являются не правильными`);
         }
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({...userDto});

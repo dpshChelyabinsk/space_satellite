@@ -4,27 +4,22 @@ import {observer} from "mobx-react-lite";
 import BaseButton from "../buttons/BaseButton";
 import { LoginFormClasses } from "./styles"
 import BaseInput from "../inputs/BaseInput";
+import classes from "../inputs/styles/BaseInput.module.css";
 
 const LoginForm = () => {
 	const [login, setLogin] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
-	const [loginError, setLoginError] = useState<string>(''); // Ошибка для логина
-	const [passwordError, setPasswordError] = useState<string>(''); // Ошибка для пароля
+	const [loginPassError, setLoginPassError] = useState<string>('');
 	const {store} = useContext(Context);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setLoginError('');
-		setPasswordError('');
+		setLoginPassError('');
 
 		const error = await store.login(login, password);
 		if (error) {
-			if (error.includes('Пользователь с таким логином')) {
-				setLoginError(error);
-			} else if (error.includes('Неправильный пароль')) {
-				setPasswordError(error);
-			} else {
-				setLoginError('Неправильные данные');
+			if (error.includes('Имя пользователя или пароль являются не правильными')) {
+				setLoginPassError(error);
 			}
 		}
 	};
@@ -33,12 +28,13 @@ const LoginForm = () => {
 		<form className={LoginFormClasses.container} onSubmit={handleSubmit}>
 			<h1 className={LoginFormClasses.header}>Вход в панель управления</h1>
 			<div className={LoginFormClasses.inputsBox}>
+				{loginPassError ? <div className={classes.error}>{loginPassError}</div> : <div className={classes.error}><br/></div>}
 				<BaseInput
 					onChange={e => setLogin(e.target.value)}
 					value={login}
 					type="text"
 					placeholder={'Логин'}
-					error={loginError}
+					error={loginPassError}
 				/>
 				<BaseInput
 					onChange={e => setPassword(e.target.value)}
@@ -46,7 +42,7 @@ const LoginForm = () => {
 					type="password"
 					autoComplete="false"
 					placeholder={'Пароль'}
-					error={passwordError}
+					error={loginPassError}
 				/>
 			</div>
 			<BaseButton type="submit">

@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import AppRouter from "./components/routers/AppRouter";
 import {BrowserRouter} from "react-router-dom";
 import Store from "./store/store";
-import Header from "./components/UI/header/Header";
+import Header from "./components/UI/headers/Header";
 
 interface StoreState {
     store: Store,

@@ -10,8 +10,6 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 const BaseInput: React.FC<InputProps> = ({ label, error, additionalClass, ...props }) => {
 	return (
 		<div className={`${classes.container} ${additionalClass || ''}`}>
-			{error ? <div className={classes.error}>{error}</div> :
-			<div className={classes.error}><br/></div>}
 			<input className={`${classes.input} ${error ? classes.errorInput : ''}`} {...props} />
 		</div>
 	);

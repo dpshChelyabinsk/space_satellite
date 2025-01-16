@@ -32,6 +32,10 @@ const Home: React.FC = () => {
 					<br/>
 					{user.email}
 					<br/>
+					{user.login}
+					<br/>
+					{user.role}
+					<br/>
 					{user.isActivated ? 'Activated' : 'Not activated'}
 					<br/>
 					<br/>
