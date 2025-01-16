@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import AppRouter from "./components/routers/AppRouter";
 import {BrowserRouter} from "react-router-dom";
 import Store from "./store/store";
-import Header from "./components/UI/headers/Header";
+import MainHeader from "./components/UI/headers/MainHeader";
 
 interface StoreState {
     store: Store,
@@ -21,7 +21,7 @@ function App() {
             {store}
         }>
             <BrowserRouter>
-                <Header/>
+                <MainHeader/>
                 <AppRouter/>
             </BrowserRouter>
         </Context.Provider>

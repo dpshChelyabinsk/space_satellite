@@ -21,6 +21,8 @@ const LoginForm = () => {
 			if (error.includes('Имя пользователя или пароль являются не правильными')) {
 				setLoginPassError(error);
 			}
+		} else if (store.isAuth) {
+			console.log('Пользователь авторизован', store.isAuth);
 		}
 	};
 

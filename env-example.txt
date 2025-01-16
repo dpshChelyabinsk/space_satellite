@@ -12,8 +12,6 @@ SMTP_PORT=<post_server_port>
 SMTP_USER=<post_server_user_name>
 SMTP_PASSWORD=<post_server_password>
 
-
-# Data base environment
 # Production
 PORT=<prod_app_port>
 DB_USER=<prod_db_user_name>

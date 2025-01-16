@@ -16,7 +16,7 @@ const AppRouter: React.FC = observer(() => {
 	}, [store]);
 
 	if(store.isLoading) {
-		return <div><Loader/></div>
+		return <div><Loader /></div>
 	}
 
 	return store.isAuth ? (
