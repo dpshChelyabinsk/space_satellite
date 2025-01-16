@@ -1,5 +1,9 @@
 const db = require('../database');
 const ApiError = require("../exceptions/api-error");
+const path = require('path');
+const fs = require('fs');
+const EventDto = require("../dtos/event-dto");
+const fileService = require('../service/file-service');
 
 class EventService {
     async createEvent(eventData) {
@@ -38,9 +42,110 @@ class EventService {
                 event_creator: eventData.event_creator,
             });
 
-            return event;
+            return new EventDto(event);
         } catch (error) {
             throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
+        }
+    }
+
+    async getEventById(eventId, req) {
+        try {
+            const event = await db.Events.findByPk(eventId);
+
+            if (!event) {
+                throw ApiError.NotFound(`Событие с ID ${eventId} не найдено`);
+            }
+
+            const category = 'events';
+            const fileUrls = await fileService.getFiles(`${category}/${event.event_photo}`);
+
+            const urls = fileUrls.map(file => ({
+                filename: file,
+                url: `${req.protocol}://${req.get('host')}/api/download/${category}/${event.event_photo}/${file}`
+            }));
+
+            const eventDto = new EventDto(event);
+            eventDto.photo = urls;
+
+            return eventDto;
+        } catch (error) {
+            throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
+        }
+    }
+
+    async getAllEvents(req) {
+        try {
+            const events = await db.Events.findAll();
+
+            const eventsWithUrls = await Promise.all(
+                events.map(async (event) => {
+                    const category = 'events';
+                    const fileUrls = await fileService.getFiles(`${category}/${event.event_photo}`);
+
+                    const urls = fileUrls.map(file => ({
+                        filename: file,
+                        url: `${req.protocol}://${req.get('host')}/api/download/${category}/${event.event_photo}/${file}`
+                    }));
+
+                    const eventDto = new EventDto(event);
+                    eventDto.photo = urls;
+
+                    return eventDto;
+                })
+            );
+
+            return eventsWithUrls;
+        } catch (error) {
+            throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
+        }
+    }
+
+    async updateEvent(eventId, updateData, req) {
+        try {
+            const event = await db.Events.findByPk(eventId);
+
+            if (!event) {
+                throw ApiError.NotFound(`Событие с ID ${eventId} не найдено`);
+            }
+
+            if (req.files && req.hashedDirectory) {
+                const oldDirectory = path.join(__dirname, '../uploads/events', event.event_photo);
+
+                if (fs.existsSync(oldDirectory)) {
+                    fs.rmSync(oldDirectory, {recursive: true, force: true});
+                }
+
+                updateData.event_photo = req.hashedDirectory;
+            }
+
+            await event.update(updateData);
+
+            return new EventDto(event);
+        } catch (error) {
+            throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
+        }
+    }
+
+    async deleteEvent(eventId) {
+        try {
+            const event = await db.Events.findByPk(eventId);
+
+            if (!event) {
+                throw ApiError.NotFound(`Событие с ID ${eventId} не найдено`);
+            }
+
+            if (event.event_photo) {
+                const directoryPath = path.join(__dirname, '../uploads/events', event.event_photo);
+                if (fs.existsSync(directoryPath)) {
+                    fs.rmSync(directoryPath, { recursive: true, force: true });
+                }
+            }
+
+            await event.destroy();
+
+            return { message: `Событие с ID ${eventId} успешно удалено` };
+        } catch (error) {
+            throw ApiError.BadResponse(`Ошибка при удалении события: ${error.message}`);
         }
     }
 }

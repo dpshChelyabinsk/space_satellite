@@ -10,7 +10,6 @@ const Home: React.FC = () => {
 	async function getUsers() {
 		try {
 			const response = await UserService.fetchUsers();
-			console.log(`Логирование ${response}`);
 			setUsers(response.data);
 		} catch (e: any) {
 			console.log(e);
@@ -20,7 +19,7 @@ const Home: React.FC = () => {
 	return (
 		<div>
 			<h1>{store.isAuth ? `User is authorized ${store.user.email}` : 'You need authorization'}</h1>
-			<div>{store.isAuth.toString()}</div>
+			<div>{store.isAuth.toString()}</div>s
 			<h2>{store.user.isActivated ? 'Is activated' : 'Not activated'}</h2>
 			<button onClick={() => store.logout()}>Exit</button>
 			<div>

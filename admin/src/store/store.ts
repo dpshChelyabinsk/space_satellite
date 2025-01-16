@@ -80,7 +80,6 @@ export default class Store {
 				`${API_URL}/refresh`,
 				{withCredentials: true}
 			);
-			console.log('checkAuth user data:', response.data.user);
 			localStorage.setItem('token', response.data.accessToken);
 			this.setAuth(true);
 			this.setUser(response.data.user);
