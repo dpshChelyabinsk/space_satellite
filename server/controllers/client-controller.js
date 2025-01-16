@@ -3,18 +3,18 @@ const clientService = require('../service/client-service');
 class ClientController {
     async registerClient(req, res, next) {
         try {
-            const { client_fullname, client_type, client_number_of_children, client_date_registry, event_id } = req.body;
+            const { fullname, type, quantity_children, date, event } = req.body;
 
-            if (!client_fullname || !client_type || !client_date_registry || !event_id) {
+            if (!fullname || !type || !date || !event) {
                 return res.status(400).json({ message: 'Не все обязательные поля заполнены' });
             }
 
             const result = await clientService.registerClient({
-                client_fullname,
-                client_type,
-                client_number_of_children: client_number_of_children || 0,
-                client_date_registry,
-                event_id
+                fullname,
+                type,
+                quantity_children: quantity_children || 0,
+                date,
+                event
             });
 
             res.status(201).json(result);

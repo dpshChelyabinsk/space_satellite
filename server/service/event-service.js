@@ -8,12 +8,12 @@ const fileService = require('../service/file-service');
 class EventService {
     async createEvent(eventData) {
         const requiredFields = [
-            'event_name',
-            'event_description',
-            'event_date_start',
-            'event_place',
-            'event_type_id',
-            'event_creator',
+            'name',
+            'description',
+            'start',
+            'place',
+            'type',
+            'author',
         ];
 
         for (const field of requiredFields) {
@@ -23,23 +23,59 @@ class EventService {
         }
 
         if (
-            eventData.event_date_end &&
-            new Date(eventData.event_date_start) > new Date(eventData.event_date_end)
+            eventData.expiry &&
+            new Date(eventData.start) > new Date(eventData.expiry)
         ) {
             throw ApiError.BadRequest('Дата начала не может быть позже даты окончания');
         }
 
         try {
             const event = await db.Events.create({
-                event_name: eventData.event_name,
-                event_description: eventData.event_description,
-                event_date_start: eventData.event_date_start,
-                event_date_end: eventData.event_date_end || null,
-                event_place: eventData.event_place,
-                event_notice: eventData.event_notice || null,
-                event_photo: eventData.event_photo || null,
-                event_type_id: eventData.event_type_id,
-                event_creator: eventData.event_creator,
+                event_name: eventData.name,
+                event_description: eventData.description,
+                event_date_start: eventData.start,
+                event_date_end: eventData.expiry || null,
+                event_place: eventData.place,
+                event_notice: eventData.notice || null,
+                event_photo: eventData.photo || null,
+                event_type_id: eventData.type,
+                event_creator: eventData.author,
+            });
+
+            return new EventDto(event);
+        } catch (error) {
+            throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
+        }
+    }
+
+    async updateEvent(eventId, updateData, req) {
+        try {
+            const event = await db.Events.findByPk(eventId);
+
+            if (!event) {
+                throw ApiError.NotFound(`Событие с ID ${eventId} не найдено`);
+            }
+
+            if (req.files && req.hashedDirectory) {
+                const oldDirectory = path.join(__dirname, '../uploads/events', event.event_photo);
+
+                if (fs.existsSync(oldDirectory)) {
+                    fs.rmSync(oldDirectory, {recursive: true, force: true});
+                }
+
+                updateData.photo = req.hashedDirectory;
+            }
+
+            await event.update({
+                event_name: updateData.name,
+                event_description: updateData.description,
+                event_date_start: updateData.start,
+                event_date_end: updateData.expiry,
+                event_place: updateData.place,
+                event_notice: updateData.notice,
+                event_photo: updateData.photo,
+                event_type_id: updateData.type,
+                event_creator: updateData.author
             });
 
             return new EventDto(event);
@@ -95,32 +131,6 @@ class EventService {
             );
 
             return eventsWithUrls;
-        } catch (error) {
-            throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
-        }
-    }
-
-    async updateEvent(eventId, updateData, req) {
-        try {
-            const event = await db.Events.findByPk(eventId);
-
-            if (!event) {
-                throw ApiError.NotFound(`Событие с ID ${eventId} не найдено`);
-            }
-
-            if (req.files && req.hashedDirectory) {
-                const oldDirectory = path.join(__dirname, '../uploads/events', event.event_photo);
-
-                if (fs.existsSync(oldDirectory)) {
-                    fs.rmSync(oldDirectory, {recursive: true, force: true});
-                }
-
-                updateData.event_photo = req.hashedDirectory;
-            }
-
-            await event.update(updateData);
-
-            return new EventDto(event);
         } catch (error) {
             throw ApiError.BadResponse(`Ошибка базы данных: ${error.message}`);
         }

@@ -9,12 +9,32 @@ class EventController {
                 return res.status(400).json({message: 'Ошибка: директория не создана'});
             }
 
-            eventData.event_photo = req.hashedDirectory;
+            eventData.photo = req.hashedDirectory;
 
             const newEvent = await eventService.createEvent(eventData);
             res.status(201).json({
                 message: 'Событие успешно создано',
                 event: newEvent,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async updateEvent(req, res, next) {
+        try {
+            const {eventId} = req.params;
+            const updateData = req.body;
+
+            if (!eventId) {
+                return res.status(400).json({message: 'Не указан ID события'});
+            }
+
+            const updatedEvent = await eventService.updateEvent(eventId, updateData, req);
+
+            res.status(200).json({
+                message: 'Событие успешно обновлено',
+                event: updatedEvent,
             });
         } catch (error) {
             next(error);
@@ -42,27 +62,6 @@ class EventController {
             const events = await eventService.getAllEvents(req);
 
             res.status(200).json(events);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    async updateEvent(req, res, next) {
-        try {
-            const {eventId} = req.params;
-            const updateData = req.body;
-            const newFiles = req.files; // Файлы, загруженные с помощью multer
-
-            if (!eventId) {
-                return res.status(400).json({message: 'Не указан ID события'});
-            }
-
-            const updatedEvent = await eventService.updateEvent(eventId, updateData, req);
-
-            res.status(200).json({
-                message: 'Событие успешно обновлено',
-                event: updatedEvent,
-            });
         } catch (error) {
             next(error);
         }

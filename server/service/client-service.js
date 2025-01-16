@@ -1,24 +1,25 @@
 const db = require('../database');
+const ClientDto = require('../dtos/client-dto');
 
 class ClientService {
-    async registerClient({ client_fullname, client_type, client_number_of_children, client_date_registry, event_id }) {
+    async registerClient({ fullname, type, quantity_children, date, event }) {
         try {
-            // Проверяем, существует ли событие
-            const event = await db.Events.findByPk(event_id);
-            if (!event) {
-                throw new Error(`Событие с ID ${event_id} не найдено`);
+            const existingEvent = await db.Events.findByPk(event);
+            if (!existingEvent) {
+                throw new Error(`Событие с ID ${event} не найдено`);
             }
 
-            // Создаем запись клиента
             const client = await db.Clients.create({
-                client_fullname,
-                client_type,
-                client_number_of_children,
-                client_date_registry,
-                client_event_id: event_id
+                client_fullname: fullname,
+                client_type: type,
+                client_number_of_children: quantity_children || 0,
+                client_date_registry: date,
+                client_event_id: event
             });
 
-            return { message: 'Клиент успешно записан на событие', client };
+            let ClientData = new ClientDto(client);
+
+            return { message: 'Клиент успешно записан на событие', ClientData };
         } catch (error) {
             throw new Error(`Ошибка при записи клиента: ${error.message}`);
         }
@@ -26,18 +27,18 @@ class ClientService {
 
     async getClientsByEvent(event_id) {
         try {
-            // Проверяем, существует ли событие
             const event = await db.Events.findByPk(event_id);
             if (!event) {
                 throw new Error(`Событие с ID ${event_id} не найдено`);
             }
 
-            // Получаем список клиентов для события
             const clients = await db.Clients.findAll({
                 where: { client_event_id: event_id }
             });
 
-            return clients;
+            let ClientData = clients.map(client => new ClientDto(client));
+
+            return ClientData;
         } catch (error) {
             throw new Error(`Ошибка при получении клиентов: ${error.message}`);
         }
