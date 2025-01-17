@@ -15,8 +15,7 @@ module.exports = function (sequelize) {
             references: {
                 model: Media(sequelize),
                 key: 'media_id'
-            },
-            onDelete: 'CASCADE'
+            }
         }
     }, {
         timestamps: false,

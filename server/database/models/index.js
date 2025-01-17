@@ -1,5 +1,4 @@
 const Albums = require('./Albums');
-const ClientLists = require('./ClientLists');
 const Clients = require('./Clients');
 const Events = require('./Events');
 const EventTypes = require('./EventTypes');
@@ -12,7 +11,6 @@ const Users = require('./Users');
 module.exports = (sequelize) => {
     return {
         Albums: Albums(sequelize),
-        ClientLists: ClientLists(sequelize),
         Clients: Clients(sequelize),
         Events: Events(sequelize),
         EventTypes: EventTypes(sequelize),

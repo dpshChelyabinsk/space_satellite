@@ -4,6 +4,6 @@ import {GetUsers} from "../models/GetUsers";
 
 export default class UserService {
 	static fetchUsers(): Promise<AxiosResponse<GetUsers[]>> {
-		return $api.get<GetUsers[]>('/users')
+		return $api.get<GetUsers[]>('/users');
 	}
 }

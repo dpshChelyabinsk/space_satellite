@@ -49,8 +49,7 @@ module.exports = function (sequelize) {
             references: {
                 model: Users(sequelize),
                 key: 'user_id'
-            },
-            onDelete: 'CASCADE'
+            }
         }
     }, {
         timestamps: false,

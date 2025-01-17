@@ -33,7 +33,6 @@ export default class Store {
 			this.setAuth(true);
 			this.setUser(response.data.user)
 		} catch (e: any) {
-			//console.log(e.response?.data?.message);
 			return e.response?.data?.message || 'Ошибка авторизации';
 		}
 	}
@@ -80,7 +79,6 @@ export default class Store {
 				`${API_URL}/refresh`,
 				{withCredentials: true}
 			);
-			console.log('checkAuth user data:', response.data.user);
 			localStorage.setItem('token', response.data.accessToken);
 			this.setAuth(true);
 			this.setUser(response.data.user);
