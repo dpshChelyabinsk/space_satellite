@@ -9,6 +9,7 @@ const authMiddleware = require('../middlewares/auth-middleware');
 const upload = require('../utils/multer');
 
 router.post('/registration',
+    authMiddleware,
     body('email').isEmail(),
     body('password').isLength({min: 3, max: 32}),
     userController.registration);
@@ -30,7 +31,7 @@ router.get('/getEvents', eventController.getAllEvents);
 router.delete('/deleteEvent/:eventId', authMiddleware, eventController.deleteEvent);
 
 router.post('/register-client', clientController.registerClient);
-router.get('/event/:event_id/clients', clientController.getClientsByEvent);
+router.get('/event/:event_id/clients', authMiddleware, clientController.getClientsByEvent);
 
 
 module.exports = router;
